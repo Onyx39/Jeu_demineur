@@ -8,7 +8,7 @@ def lancer_le_jeu () :
     except ValueError:
         print("\nVous n'avez pas rentré un entier\nVeuillez recommencer\n")
         exit()
-    if n < 0 or n > 20 :
+    if n <= 0 or n > 20 :
         print("\nL'entier ne rentre pas dans le domaine demandé\nVeuillez recommencer\n")
         exit()
     

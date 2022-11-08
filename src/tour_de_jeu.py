@@ -20,20 +20,30 @@ def tour_de_jeu (plateau, mines) :
         print("\nLa valeur que vous avez rentré est incorrecte\n")
         tour_de_jeu(plateau, mines)
 
-def devoiler(plateau, mines) :
-    col = str(input("\nEntrer le nom d'une colonne\nUne seule majuscule est attendue\n"))
-    if len(col)!= 1 :
-        devoiler(plateau)
-    col = correspondance(col)
-    lig = int(input("Entrer le numéro d'une ligne\nUn entier est attendu\n"))
+def devoiler(plateau, mines, lig = '', col = '') :
+    if lig == '' and col == '' :
+        entree = input("\nEntrer les coordonnées d'une case (colonne/ligne)\nUne lettre et un nombre sont attendus\n")
+        try :
+            lig = int(entree[1:])
+            col = correspondance(entree[0])
+        except ValueError:
+            print("\nVous n'avez pas respecté les consignes, recommencez")
+            devoiler(plateau, mines)
     if not test_case(lig, col, plateau) :
         print("\nLa case que vous avez rentré est incorrecte\n")
+        tour_de_jeu(plateau, mines)
+    if plateau[lig][col] == '#' :
+        print("\nVous avez placé un drapeau sur cette case, vous ne pouvez pas la dévoiler\n")
         tour_de_jeu(plateau, mines)
     if est_mine (lig, col, mines) :
         print('\nVous avez marché sur une mine, vous avez perdu\n', mines, '\n')
         fin_de_partie()
     else : 
-        plateau[lig][col] = calcul_nombre(lig, col, plateau, mines)
+        plateau[lig][col] = calcul_nombre(lig, col, mines)
+        """
+        if plateau[lig][col] == ' ' :
+            devoiler_autour(lig, col, plateau, mines)
+        """
         affichage_jeu(plateau)
         if test_fin_de_partie(plateau, mines) :
             print('Vous avez gagné ! Bravo !\n')
@@ -42,13 +52,15 @@ def devoiler(plateau, mines) :
             tour_de_jeu(plateau, mines)
     
 def poser_un_drapeau (plateau, mines) :
-    col = str(input("\nEntrer le nom d'une colonne\nUne seule majuscule est attendue\n"))
-    if len(col)!= 1 :
-        poser_un_drapeau(plateau, mines)
-    col = correspondance(col)
-    lig = int(input("Entrer le numéro d'une ligne\nUn entier est attendu\n"))
+    entree = input("\nEntrer les coordonnées d'une case (colonne/ligne)\nUne lettre et un nombre sont attendus\n")
+    try :
+        lig = int(entree[1:])
+        col = correspondance(entree[0])
+    except ValueError:
+        print("\nVous n'avez pas respecté les consignes, recommencez")
+        devoiler(plateau, mines)
     if not test_case(lig, col, plateau) :
-        print("\nLa case que vous avez entrée est incorrecte\n")
+        print("\nLa case que vous avez rentré est incorrecte\n")
         tour_de_jeu(plateau, mines)
     if plateau[lig][col] == ['X'] or plateau[lig][col] == 'X':
         plateau[lig][col] = "#"
@@ -62,13 +74,15 @@ def poser_un_drapeau (plateau, mines) :
         tour_de_jeu(plateau, mines)
     
 def retirer_un_drapeau (plateau, mines) :
-    col = str(input("\nEntrer le nom d'une colonne\nUne seule majuscule est attendue\n"))
-    if len(col)!= 1 :
-        poser_un_drapeau(plateau)
-    col = correspondance(col)
-    lig = int(input("Entrer le numéro d'une ligne\nUn entier est attendu\n"))
+    entree = input("\nEntrer les coordonnées d'une case (colonne/ligne)\nUne lettre et un nombre sont attendus\n")
+    try :
+        lig = int(entree[1:])
+        col = correspondance(entree[0])
+    except ValueError:
+        print("\nVous n'avez pas respecté les consignes, recommencez")
+        devoiler(plateau, mines)
     if not test_case(lig, col, plateau) :
-        print("\nLa case que vous avez entrée est incorrecte\n")
+        print("\nLa case que vous avez rentrée est incorrecte\n")
         tour_de_jeu(plateau, mines)
     if plateau[lig][col] == "#" or plateau[lig][col] == ['#'] :
         plateau[lig][col] = "X"
@@ -80,13 +94,17 @@ def retirer_un_drapeau (plateau, mines) :
 def test_fin_de_partie (plateau, mines) :
     for i in range (len(plateau)) :
         for j in range (len(plateau)) :
-            #print(i, j)
             if [i, j] not in mines and (plateau[i][j] == 'X' or plateau[i][j] == ['X']) :
-                #print([i, j] not in mines, plateau[i][j] == 'X', plateau[i][j] == ['X'])
                 return False
+    for i in range (len(plateau)) :
+        for j in range (len(plateau)) :
+            if [i, j] in mines and (plateau[i][j] == 'X' or plateau[i][j] == ['X']) :
+                plateau[i][j] = "#"
+    affichage_jeu(plateau)
     return True
 
 def correspondance (str) :
+    str = str.upper()
     l = [["A", 0], ["B", 1], ["C", 2], ["D", 3], ["E", 4], ["F", 5], ["G", 6], ["H", 7], ["I", 8], ["J", 9], ["K", 10], ["L", 11], ["M", 12], ["N", 13], ["O", 14], ["P", 15], ["Q", 16], ["R", 17], ["S", 18], ["T", 19]]
     for i in l :
         if i[0] == str :
@@ -98,7 +116,7 @@ def test_case (lig, col, plateau) :
         return False
     return True
 
-def calcul_nombre (lig, col, plateau, mines) :
+def calcul_nombre (lig, col, mines) :
     compteur = 0
     for i in range (lig - 1, lig + 2) :
         for j in range (col - 1, col + 2) :
@@ -114,5 +132,17 @@ def est_mine (lig, col, mines) :
     return False
 
 def fin_de_partie () :
-    print("Merci d'avoir joué\nCe jeu vous a été proposé par Valentin RICHARD\nN'hésitez pas à faire des retours ou à rejouer\n\nA la prochaine fois :)\n")
+    print("Merci d'avoir joué\nCe jeu vous a été proposé par Valentin Richard\nN'hésitez pas à faire des retours ou à rejouer\n\nA la prochaine fois :)\n")
     exit()
+
+
+def devoiler_autour (lig, col, plateau, mines) :
+    #boucle comme calcul et devoiler toutes les cases.
+    #Il faut regler le problème des bords
+    for i in range (max(0, (lig - 1)), min(len(plateau) + 1, lig + 2)) :
+        for j in range (max(0, col - 1), min(len(plateau), col + 2)) :
+            try :
+                devoiler(plateau, mines, i, j)
+            except ValueError :
+                pass
+    return 0
