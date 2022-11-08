@@ -2,7 +2,7 @@ import random as rd
 
 def lancer_le_jeu () :
     print("\n\nBienvenue dans le jeu du démineur\nCe programme a été implémenté par Valentin Richard\nBon jeu !")
-    n = (input("\nDéfinissez la taille de plateau \n(Un entier inférieur ou égal à 21 est demandé)\n"))
+    n = (input("\nDéfinissez la taille de plateau \n(Un entier inférieur ou égal à 20 est demandé)\n"))
     try :
         n = int(n)
     except ValueError:

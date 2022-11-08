@@ -13,9 +13,9 @@ def tour_de_jeu (plateau, mines) :
     if choix == "0" :
         devoiler (plateau, mines)
     elif choix == "1" :
-        poser_un_drapeau (plateau)
+        poser_un_drapeau (plateau, mines)
     elif choix == "2" :
-        retirer_un_drapeau (plateau)
+        retirer_un_drapeau (plateau, mines)
     else : 
         print("\nLa valeur que vous avez rentré est incorrecte\n")
         tour_de_jeu(plateau, mines)
@@ -23,12 +23,12 @@ def tour_de_jeu (plateau, mines) :
 def devoiler(plateau, mines) :
     col = str(input("\nEntrer le nom d'une colonne\nUne seule majuscule est attendue\n"))
     if len(col)!= 1 :
-        poser_un_drapeau(plateau)
+        devoiler(plateau)
     col = correspondance(col)
     lig = int(input("Entrer le numéro d'une ligne\nUn entier est attendu\n"))
     if not test_case(lig, col, plateau) :
         print("\nLa case que vous avez rentré est incorrecte\n")
-        return plateau
+        tour_de_jeu(plateau, mines)
     if est_mine (lig, col, mines) :
         print('\nVous avez marché sur une mine, vous avez perdu\n', mines, '\n')
         fin_de_partie()
@@ -39,29 +39,29 @@ def devoiler(plateau, mines) :
             print('Vous avez gagné ! Bravo !\n')
             fin_de_partie()
         else : 
-            return plateau
+            tour_de_jeu(plateau, mines)
     
-def poser_un_drapeau (plateau) :
+def poser_un_drapeau (plateau, mines) :
     col = str(input("\nEntrer le nom d'une colonne\nUne seule majuscule est attendue\n"))
     if len(col)!= 1 :
-        poser_un_drapeau(plateau)
+        poser_un_drapeau(plateau, mines)
     col = correspondance(col)
     lig = int(input("Entrer le numéro d'une ligne\nUn entier est attendu\n"))
     if not test_case(lig, col, plateau) :
         print("\nLa case que vous avez entrée est incorrecte\n")
-        return plateau
+        tour_de_jeu(plateau, mines)
     if plateau[lig][col] == ['X'] or plateau[lig][col] == 'X':
         plateau[lig][col] = "#"
         affichage_jeu(plateau)
-        return plateau
+        tour_de_jeu(plateau, mines)
     elif plateau[lig][col] == '#' or plateau[lig][col] == ['#']: 
         print("Vous avez déjà posé un drapeau ici\n")
-        return plateau
+        tour_de_jeu(plateau, mines)
     else : 
         print("Vous ne pouvez pas poser de drapeau ici\n")
-        return plateau
+        tour_de_jeu(plateau, mines)
     
-def retirer_un_drapeau (plateau) :
+def retirer_un_drapeau (plateau, mines) :
     col = str(input("\nEntrer le nom d'une colonne\nUne seule majuscule est attendue\n"))
     if len(col)!= 1 :
         poser_un_drapeau(plateau)
@@ -69,19 +69,20 @@ def retirer_un_drapeau (plateau) :
     lig = int(input("Entrer le numéro d'une ligne\nUn entier est attendu\n"))
     if not test_case(lig, col, plateau) :
         print("\nLa case que vous avez entrée est incorrecte\n")
-        return plateau
+        tour_de_jeu(plateau, mines)
     if plateau[lig][col] == "#" or plateau[lig][col] == ['#'] :
         plateau[lig][col] = "X"
         affichage_jeu(plateau)
-        return plateau
+        tour_de_jeu(plateau, mines)
     else :
         print("\nVous ne pouvez pas retirer de drapeau ici (car vous êtes médiocre)\n")
 
 def test_fin_de_partie (plateau, mines) :
     for i in range (len(plateau)) :
         for j in range (len(plateau)) :
-            print(i, j)
+            #print(i, j)
             if [i, j] not in mines and (plateau[i][j] == 'X' or plateau[i][j] == ['X']) :
+                #print([i, j] not in mines, plateau[i][j] == 'X', plateau[i][j] == ['X'])
                 return False
     return True
 
