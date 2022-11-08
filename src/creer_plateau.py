@@ -1,4 +1,3 @@
-from affichage_plateau import affichage_jeu
 import random as rd
 
 def lancer_le_jeu () :
@@ -21,10 +20,7 @@ def lancer_le_jeu () :
             ligne.append(["X"])
         plateau.append(ligne)
 
-    #affichage_jeu (plateau)
     mines = creer_liste_mines (plateau)
-    #print(mines)
-    #print(len(mines))
     return plateau, mines
 
 

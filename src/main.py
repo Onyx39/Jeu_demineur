@@ -1,3 +1,3 @@
-from tour_de_jeu import initialisation
+from tour_de_jeu import demarrage
 
-initialisation()
+demarrage()
