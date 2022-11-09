@@ -47,7 +47,7 @@ def devoiler(plateau, mines, lig = '', col = '') :
         print("\nVous avez placé un drapeau sur cette case, vous ne pouvez pas la dévoiler\n")
         devoiler(plateau, mines)
     if est_mine (lig, col, mines) :
-        print('\nVous avez marché sur une mine, vous avez perdu\n', mines, '\n')
+        print('\nVous avez marché sur une mine, vous avez perdu\n', affichage_mines(mines), '\n')
         fin_de_partie()
     else : 
         plateau[lig][col] = calcul_nombre(lig, col, mines)
@@ -128,6 +128,13 @@ def correspondance (str) :
             return i[1]
     return False
 
+def correspondance_inverse (int) :
+    l = [["A", 0], ["B", 1], ["C", 2], ["D", 3], ["E", 4], ["F", 5], ["G", 6], ["H", 7], ["I", 8], ["J", 9], ["K", 10], ["L", 11], ["M", 12], ["N", 13], ["O", 14], ["P", 15], ["Q", 16], ["R", 17], ["S", 18], ["T", 19]]
+    for i in l :
+        if i[1] == int :
+            return i[0]
+    return False
+
 def test_case (lig, col, plateau) :
     if col >= len(plateau) or lig >= len(plateau) or col == False:
         return False
@@ -192,3 +199,9 @@ def test_retour(str, plateau, mines) :
     if str == 'retour' :
         print('\n')
         tour_de_jeu(plateau, mines)
+
+def affichage_mines (mines) :
+    for i in mines :
+        i[1] = correspondance_inverse(i[1])
+        i[0], i[1] = i[1], i[0]
+    return mines
