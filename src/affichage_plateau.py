@@ -1,7 +1,6 @@
 def affichage_jeu (plateau) :
     n = len(plateau)
     abscisses = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K" , "L", "M", "N", "O", "P", "Q", "R", "S", "T"]
-    #print(len(abscisses)) 
     compteur = 0
     print("\n")
     print("      ", end="")

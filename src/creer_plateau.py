@@ -1,16 +1,20 @@
 import random as rd
 
 def lancer_le_jeu () :
-    print("\n\nBienvenue dans le jeu du démineur\nCe programme a été implémenté par Valentin Richard\nBon jeu !")
-    n = (input("\nDéfinissez la taille de plateau \n(Un entier inférieur ou égal à 20 est demandé)\n"))
+    print("\n\nBienvenue dans le jeu du démineur\nCe programme a été implémenté par Valentin Richard\nEntrer 'exit' à n'importe quel moment pour fermer le programme\nBon jeu !")
+    n = (input("\nDéfinissez la taille de plateau \n(Un entier non nul inférieur ou égal à 20 est demandé)\n"))
+    if n == 'exit' :
+        fin_de_partie()
     try :
         n = int(n)
     except ValueError:
-        print("\nVous n'avez pas rentré un entier\nVeuillez recommencer\n")
-        exit()
+        print("\nVous n'avez pas entré un entier\nVeuillez recommencer\n")
+        print("*"*40)
+        lancer_le_jeu()
     if n <= 0 or n > 20 :
         print("\nL'entier ne rentre pas dans le domaine demandé\nVeuillez recommencer\n")
-        exit()
+        print("*"*40)
+        lancer_le_jeu()
     
 
     plateau = []
@@ -44,3 +48,7 @@ def creer_liste_mines (plateau) :
     if len(liste_mines) == m :
         return liste_mines
     else : return creer_liste_mines(plateau)
+
+def fin_de_partie () :
+    print("\nMerci d'avoir joué\nCe jeu vous a été proposé par Valentin Richard\nN'hésitez pas à faire des retours ou à rejouer\n\nA la prochaine fois :)\n")
+    exit()
