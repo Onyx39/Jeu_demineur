@@ -51,10 +51,8 @@ def devoiler(plateau, mines, lig = '', col = '') :
         fin_de_partie()
     else : 
         plateau[lig][col] = calcul_nombre(lig, col, mines)
-        """
         if plateau[lig][col] == ' ' :
             devoiler_autour(lig, col, plateau, mines)
-        """
         affichage_jeu(plateau)
         if test_fin_de_partie(plateau, mines) :
             print('Vous avez gagné ! Bravo !\n')
@@ -136,7 +134,9 @@ def correspondance_inverse (int) :
     return False
 
 def test_case (lig, col, plateau) :
-    if col >= len(plateau) or lig >= len(plateau) or col == False:
+    if col == 0 and lig < len(plateau) and lig >= 0 :
+        return True
+    if col >= len(plateau) or lig >= len(plateau) or col == False or col < 0 or lig < 0 :
         return False
     return True
 
@@ -159,12 +159,21 @@ def est_mine (lig, col, mines) :
 def devoiler_autour (lig, col, plateau, mines) :
     #boucle comme calcul et devoiler toutes les cases.
     #Il faut regler le problème des bords
-    for i in range (max(0, (lig - 1)), min(len(plateau) + 1, lig + 2)) :
-        for j in range (max(0, col - 1), min(len(plateau), col + 2)) :
-            try :
-                devoiler(plateau, mines, i, j)
-            except ValueError :
-                pass
+    liste_cases_voisines = [[lig - 1, col - 1], [lig - 1, col], [lig - 1, col + 1],
+                            [lig, col - 1], [lig, col + 1],
+                            [lig + 1, col - 1], [lig + 1, col], [lig + 1, col + 1]]
+    liste_attente = []
+    for i in liste_cases_voisines:
+        if test_case(i[0], i[1], plateau) :
+            if plateau[i[0]][i[1]] != ' ' :
+                liste_attente.append(i)
+    print(liste_attente, len(liste_attente))
+    devoiler_la_liste(plateau, mines, liste_attente)
+    return 0
+
+def devoiler_la_liste (plateau, mines, liste) :
+    for i in liste :
+        devoiler(plateau, mines, i[0], i[1])
     return 0
 
 def affichage_nombre_mines_restantes (plateau, mines) :
