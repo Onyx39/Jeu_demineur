@@ -3,29 +3,34 @@ import random as rd
 def lancer_le_jeu () :
     print("\n\nBienvenue dans le jeu du démineur\nCe programme a été implémenté par Valentin Richard\nEntrer 'exit' à n'importe quel moment pour fermer le programme\nBon jeu !")
     n = (input("\nDéfinissez la taille de plateau \n(Un entier non nul inférieur ou égal à 20 est demandé)\n"))
+    if test_entrer_utilisateur(n) == int(n) :
+        m = int(n)
+        plateau = []
+        for i in range (m) :
+            ligne = []
+            for j in range (m) :
+                ligne.append(["x"])
+            plateau.append(ligne)
+
+        mines = creer_liste_mines (plateau)
+        return plateau, mines
+
+def test_entrer_utilisateur (n) :
     if n == 'exit' :
-        fin_de_partie()
+            fin_de_partie()
     try :
         n = int(n)
     except ValueError:
         print("\nVous n'avez pas entré un entier\nVeuillez recommencer\n")
         print("*"*40)
         lancer_le_jeu()
+    print(type(n))
+    print(n)
     if n <= 0 or n > 20 :
         print("\nL'entier ne rentre pas dans le domaine demandé\nVeuillez recommencer\n")
         print("*"*40)
         lancer_le_jeu()
-    
-
-    plateau = []
-    for i in range (n) :
-        ligne = []
-        for j in range (n) :
-            ligne.append(["X"])
-        plateau.append(ligne)
-
-    mines = creer_liste_mines (plateau)
-    return plateau, mines
+    return int(n)
 
 
 def creer_liste_mines (plateau) :

@@ -47,7 +47,12 @@ def devoiler(plateau, mines, lig = '', col = '') :
         print("\nVous avez placé un drapeau sur cette case, vous ne pouvez pas la dévoiler\n")
         devoiler(plateau, mines)
     if est_mine (lig, col, mines) :
-        print('\nVous avez marché sur une mine, vous avez perdu\n', affichage_mines(mines), '\n')
+        for i in range (len(plateau)) :
+            for j in range (len(plateau)) :
+                if [i, j] in mines and (plateau[i][j] == 'x' or plateau[i][j] == ['x']) :
+                    plateau[i][j] = "#"
+        affichage_jeu(plateau)
+        print('\nVous avez marché sur une mine, vous avez perdu\n')
         fin_de_partie()
     else : 
         plateau[lig][col] = calcul_nombre(lig, col, mines)
@@ -73,7 +78,7 @@ def poser_un_drapeau (plateau, mines) :
     if not test_case(lig, col, plateau) :
         print("\nLa case que vous avez rentré est incorrecte\n")
         poser_un_drapeau(plateau, mines)
-    if plateau[lig][col] == ['X'] or plateau[lig][col] == 'X':
+    if plateau[lig][col] == ['x'] or plateau[lig][col] == 'x':
         plateau[lig][col] = "#"
         affichage_jeu(plateau)
         affichage_nombre_mines_restantes(plateau, mines)
@@ -99,21 +104,21 @@ def retirer_un_drapeau (plateau, mines) :
         print("\nLa case que vous avez rentrée est incorrecte\n")
         retirer_un_drapeau(plateau, mines)
     if plateau[lig][col] == "#" or plateau[lig][col] == ['#'] :
-        plateau[lig][col] = "X"
+        plateau[lig][col] = "x"
         affichage_jeu(plateau)
         affichage_nombre_mines_restantes(plateau, mines)
         tour_de_jeu(plateau, mines)
     else :
-        print("\nVous ne pouvez pas retirer de drapeau ici (car vous êtes médiocre)\n")
+        print("\nVous ne pouvez pas retirer de drapeau ici\n")
 
 def test_fin_de_partie (plateau, mines) :
     for i in range (len(plateau)) :
         for j in range (len(plateau)) :
-            if [i, j] not in mines and (plateau[i][j] == 'X' or plateau[i][j] == ['X']) :
+            if [i, j] not in mines and (plateau[i][j] == 'x' or plateau[i][j] == ['x']) :
                 return False
     for i in range (len(plateau)) :
         for j in range (len(plateau)) :
-            if [i, j] in mines and (plateau[i][j] == 'X' or plateau[i][j] == ['X']) :
+            if [i, j] in mines and (plateau[i][j] == 'x' or plateau[i][j] == ['x']) :
                 plateau[i][j] = "#"
     affichage_jeu(plateau)
     return True
@@ -124,13 +129,6 @@ def correspondance (str) :
     for i in l :
         if i[0] == str :
             return i[1]
-    return False
-
-def correspondance_inverse (int) :
-    l = [["A", 0], ["B", 1], ["C", 2], ["D", 3], ["E", 4], ["F", 5], ["G", 6], ["H", 7], ["I", 8], ["J", 9], ["K", 10], ["L", 11], ["M", 12], ["N", 13], ["O", 14], ["P", 15], ["Q", 16], ["R", 17], ["S", 18], ["T", 19]]
-    for i in l :
-        if i[1] == int :
-            return i[0]
     return False
 
 def test_case (lig, col, plateau) :
@@ -157,23 +155,23 @@ def est_mine (lig, col, mines) :
 
 
 def devoiler_autour (lig, col, plateau, mines) :
-    #boucle comme calcul et devoiler toutes les cases.
-    #Il faut regler le problème des bords
     liste_cases_voisines = [[lig - 1, col - 1], [lig - 1, col], [lig - 1, col + 1],
                             [lig, col - 1], [lig, col + 1],
                             [lig + 1, col - 1], [lig + 1, col], [lig + 1, col + 1]]
     liste_attente = []
+
     for i in liste_cases_voisines:
         if test_case(i[0], i[1], plateau) :
-            if plateau[i[0]][i[1]] != ' ' :
+            if plateau[i[0]][i[1]] == ['x'] :
                 liste_attente.append(i)
-    print(liste_attente, len(liste_attente))
     devoiler_la_liste(plateau, mines, liste_attente)
     return 0
 
 def devoiler_la_liste (plateau, mines, liste) :
     for i in liste :
-        devoiler(plateau, mines, i[0], i[1])
+        plateau[i[0]][i[1]] = calcul_nombre(i[0], i[1], mines)
+        if plateau[i[0]][i[1]] == ' ' :
+            devoiler_autour(i[0], i[1], plateau, mines)
     return 0
 
 def affichage_nombre_mines_restantes (plateau, mines) :
@@ -208,9 +206,3 @@ def test_retour(str, plateau, mines) :
     if str == 'retour' :
         print('\n')
         tour_de_jeu(plateau, mines)
-
-def affichage_mines (mines) :
-    for i in mines :
-        i[1] = correspondance_inverse(i[1])
-        i[0], i[1] = i[1], i[0]
-    return mines
