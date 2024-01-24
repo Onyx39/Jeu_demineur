@@ -36,6 +36,16 @@ def lancer_le_jeu () :
     return None
 
 def test_entrer_utilisateur (entree) :
+    """
+    Fonction qui vérifie l'entrée de l'utilisateur pour l'initialisation
+
+    Entrée :
+        entree (str) : la saisie de l'utilisateur
+
+    Sortie :
+        int(entree) (int) : l'entier de la saisie si valide
+    """
+
     if entree == 'exit' :
         fin_de_partie()
     try :
@@ -54,6 +64,16 @@ def test_entrer_utilisateur (entree) :
 
 
 def creer_liste_mines (plateau) :
+    """
+    Fonction qui place des mines de manière aléatoire
+
+    Entrée :
+        plateau (list<list>) : la représentation du plateau
+
+    Sorties :
+        liste_mines (list) : la liste des mines
+    """
+
     longeur = len(plateau)
     nb_mines = round(0.15625*longeur*longeur)
 

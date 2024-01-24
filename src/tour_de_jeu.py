@@ -1,17 +1,39 @@
+"""
+Fichier en charge du tour de jeu (gérer les drapeaux, dévoiler des cases)
+"""
+
 from creer_plateau import lancer_le_jeu, fin_de_partie
 from affichage_plateau import affichage_jeu
 
 def demarrage() :
+    """"
+    Fonction qui démarre la jeu
+
+    Aucune entrée
+
+    Auncune sortie
+    """
+
     plateau, mines = lancer_le_jeu()
     affichage_jeu(plateau)
     if len(mines) == 1 :
         print("Vous avez 1 mine à trouver\nBonne chance !\n")
     else : print("Vous avez", len(mines), "mines à trouver\nBonne chance !\n")
     tour_de_jeu(plateau, mines)
-    return 0
 
 def tour_de_jeu (plateau, mines) :
-    choix = input ("Souhaitez-vous dévoiler une case (0), poser un drapeau (1) ou retirer un drapeau (2) ? ")
+    """"
+    Fonction qui permet à l'utilisateur de choisir une action
+
+    Entrées :
+        plateau (list) : représentation du plateau
+        mines (list) : la liste des mines
+
+    Aucune sortie
+    """
+
+    choix = input ("Souhaitez-vous dévoiler une case (0)," \
+                   + "poser un drapeau (1) ou retirer un drapeau (2) ? ")
     test_fin_de_programme(choix)
     if choix == "0" :
         devoiler (plateau, mines)
@@ -25,13 +47,27 @@ def tour_de_jeu (plateau, mines) :
             print("\nVous n'avez placé aucun drapeau\n")
             tour_de_jeu(plateau, mines)
         retirer_un_drapeau (plateau, mines)
-    else : 
+    else :
         print("\nLa valeur que vous avez rentré est incorrecte\n")
         tour_de_jeu(plateau, mines)
 
 def devoiler(plateau, mines, lig = '', col = '') :
+    """
+    Fonction qui permet de dévoiler une case
+
+    Entrées :
+        plateau (list) : représentation du plateau
+        mines (list) : la liste des mines
+        lig (str, defaut ' ') : la ligne à dévoiler
+        col (str, defaul ' ') : la colonne à dévoiler
+
+    Aucune sortie
+    """
+
     if lig == '' and col == '' :
-        entree = input("\nEntrer les coordonnées d'une case (colonne/ligne)\nUne lettre et un nombre sont attendus. Entrer 'retour' pour revenir au menu précédent\n")
+        entree = input("\nEntrer les coordonnées d'une case (colonne/ligne)\n" \
+                       + "Une lettre et un nombre sont attendus. " \
+                       + "Entrer 'retour' pour revenir au menu précédent\n")
         test_fin_de_programme(entree)
         test_retour(entree, plateau, mines)
         try :
@@ -47,14 +83,15 @@ def devoiler(plateau, mines, lig = '', col = '') :
         print("\nVous avez placé un drapeau sur cette case, vous ne pouvez pas la dévoiler\n")
         devoiler(plateau, mines)
     if est_mine (lig, col, mines) :
-        for i in range (len(plateau)) :
-            for j in range (len(plateau)) :
-                if [i, j] in mines and (plateau[i][j] == 'x' or plateau[i][j] == ['x']) :
-                    plateau[i][j] = "#"
+        for i in enumerate(plateau) :
+            for j in enumerate(plateau) :
+                if [i[0], j[0]] in mines and (plateau[i[0]][j[0]] == 'x' or
+                                              plateau[i[0]][j[0]] == ['x']) :
+                    plateau[i[0]][j[0]] = "#"
         affichage_jeu(plateau)
         print('\nVous avez marché sur une mine, vous avez perdu\n')
         fin_de_partie()
-    else : 
+    else :
         plateau[lig][col] = calcul_nombre(lig, col, mines)
         if plateau[lig][col] == ' ' :
             devoiler_autour(lig, col, plateau, mines)
@@ -62,11 +99,23 @@ def devoiler(plateau, mines, lig = '', col = '') :
         if test_fin_de_partie(plateau, mines) :
             print('Vous avez gagné ! Bravo !\n')
             fin_de_partie()
-        else : 
+        else :
             tour_de_jeu(plateau, mines)
-    
+
 def poser_un_drapeau (plateau, mines) :
-    entree = input("\nEntrer les coordonnées d'une case (colonne/ligne)\nUne lettre et un nombre sont attendus. Entrer 'retour' pour revenir au menu précédent\n")
+    """
+    Fonction qui permet de poser un drapeau
+
+    Entrées :
+        plateau (list) : représentation du plateau
+        mines (list) : la liste des mines
+
+    Aucune sortie
+    """
+
+    entree = input("\nEntrer les coordonnées d'une case (colonne/ligne)\n" \
+                       + "Une lettre et un nombre sont attendus. " \
+                       + "Entrer 'retour' pour revenir au menu précédent\n")
     test_fin_de_programme(entree)
     test_retour(entree, plateau, mines)
     try :
@@ -83,15 +132,27 @@ def poser_un_drapeau (plateau, mines) :
         affichage_jeu(plateau)
         affichage_nombre_mines_restantes(plateau, mines)
         tour_de_jeu(plateau, mines)
-    elif plateau[lig][col] == '#' or plateau[lig][col] == ['#']: 
+    elif plateau[lig][col] == '#' or plateau[lig][col] == ['#'] :
         print("Vous avez déjà posé un drapeau ici\n")
         tour_de_jeu(plateau, mines)
-    else : 
+    else :
         print("Vous ne pouvez pas poser de drapeau ici\n")
         tour_de_jeu(plateau, mines)
-    
+
 def retirer_un_drapeau (plateau, mines) :
-    entree = input("\nEntrer les coordonnées d'une case (colonne/ligne)\nUne lettre et un nombre sont attendus. Entrer 'retour' pour revenir au menu précédent\n")
+    """
+    Fonction qui permet de retirer un drapeau
+
+    Entrées :
+        plateau (list) : représentation du plateau
+        mines (list) : la liste des mines
+
+    Aucune sortie
+    """
+
+    entree = input("\nEntrer les coordonnées d'une case (colonne/ligne)\n" \
+                       + "Une lettre et un nombre sont attendus. " \
+                       + "Entrer 'retour' pour revenir au menu précédent\n")
     test_fin_de_programme(entree)
     test_retour(entree, plateau, mines)
     try :
@@ -112,33 +173,83 @@ def retirer_un_drapeau (plateau, mines) :
         print("\nVous ne pouvez pas retirer de drapeau ici\n")
 
 def test_fin_de_partie (plateau, mines) :
-    for i in range (len(plateau)) :
-        for j in range (len(plateau)) :
-            if [i, j] not in mines and (plateau[i][j] == 'x' or plateau[i][j] == ['x']) :
+    """
+    Fonction qui teste si la partie est terminée
+
+    Entrées :
+        plateau (list) : représentation du plateau
+        mines (list) : la liste des mines
+
+    Sortie :
+        True (bool) si la partie est terminée
+    """
+
+    for i in enumerate(plateau) :
+        for j in enumerate(plateau) :
+            if [i[0], j[0]] not in mines and (plateau[i[0]][j[0]] == 'x' or
+                                              plateau[i[0]][j[0]] == ['x']) :
                 return False
-    for i in range (len(plateau)) :
-        for j in range (len(plateau)) :
-            if [i, j] in mines and (plateau[i][j] == 'x' or plateau[i][j] == ['x']) :
-                plateau[i][j] = "#"
+    for i in enumerate(plateau) :
+        for j in enumerate(plateau) :
+            if [i[0], j[0]] in mines and (plateau[i[0]][j[0]] == 'x' or
+                                          plateau[i[0]][j[0]] == ['x']) :
+                plateau[i[0]][j[0]] = "#"
     affichage_jeu(plateau)
     return True
 
-def correspondance (str) :
-    str = str.upper()
-    l = [["A", 0], ["B", 1], ["C", 2], ["D", 3], ["E", 4], ["F", 5], ["G", 6], ["H", 7], ["I", 8], ["J", 9], ["K", 10], ["L", 11], ["M", 12], ["N", 13], ["O", 14], ["P", 15], ["Q", 16], ["R", 17], ["S", 18], ["T", 19]]
-    for i in l :
-        if i[0] == str :
+def correspondance (string) :
+    """
+    Fonction qui fait la correspondance entre une lettre et son chiffre
+
+    Entrée :
+        string (str) : la lettre dont on veut la correspondance
+
+    Sortie :
+        (int) : le chiffre associé ou False en cas d'erreur
+    """
+
+    string = string.upper()
+    liste = [["A", 0], ["B", 1], ["C", 2], ["D", 3], ["E", 4],
+             ["F", 5], ["G", 6], ["H", 7], ["I", 8], ["J", 9],
+             ["K", 10], ["L", 11], ["M", 12], ["N", 13], ["O", 14],
+             ["P", 15], ["Q", 16], ["R", 17], ["S", 18], ["T", 19]]
+    for i in liste :
+        if i[0] == string :
             return i[1]
     return False
 
 def test_case (lig, col, plateau) :
-    if col == 0 and lig < len(plateau) and lig >= 0 :
+    """"
+    Fonction qui teste si la case entrée est valide
+
+    Entrée :
+        lig (int) : le numéro de ligne
+        col (int) : le numéro de colonne
+        plateau (list) : la représentation du plateau
+
+    Sortie :
+        True (bool) : si la case est valide, False sinon
+    """
+    if col == 0 and  0 <= lig < len(plateau) :
         return True
-    if col >= len(plateau) or lig >= len(plateau) or col == False or col < 0 or lig < 0 :
+    if col >= len(plateau) or lig >= len(plateau) or not col or col < 0 or lig < 0 :
         return False
     return True
 
 def calcul_nombre (lig, col, mines) :
+    """
+    Fonction qui calcule le nombre de mines autour d'un case donnée
+
+    Entrée :
+        lig (int) : le numéro de ligne
+        col (int) : le numéro de colonne
+        mines (list) : la liste des mines
+
+    Sortie :
+        str(compteur) (str) : le nombre de mines autour de la case
+                              string vide si compteur = 0
+    """
+
     compteur = 0
     for i in range (lig - 1, lig + 2) :
         for j in range (col - 1, col + 2) :
@@ -146,15 +257,38 @@ def calcul_nombre (lig, col, mines) :
                 compteur += 1
     if compteur != 0 :
         return str(compteur)
-    else : return ' '
+
+    return ' '
 
 def est_mine (lig, col, mines) :
+    """
+    Fonction qui détermine si une case est minée
+
+    Entrée :
+        lig (int) : le numéro de ligne
+        col (int) : le numéro de colonne
+        mines (list) : la liste des mines
+
+    Sortie :
+        (bool) : True si la case est minée, False sinon
+    """
     if [lig, col] in mines :
         return True
     return False
 
 
 def devoiler_autour (lig, col, plateau, mines) :
+    """
+    Fonction qui créé la liste des cases à dévoiler
+
+    Entrée :
+        lig (int) : le uméro de la ligne
+        col (int) : le numéro de la colonne
+        plateau (list) : la représentation du plateau
+        mines (list) : la liste des mines
+
+    Aucune sortie
+    """
     liste_cases_voisines = [[lig - 1, col - 1], [lig - 1, col], [lig - 1, col + 1],
                             [lig, col - 1], [lig, col + 1],
                             [lig + 1, col - 1], [lig + 1, col], [lig + 1, col + 1]]
@@ -165,16 +299,36 @@ def devoiler_autour (lig, col, plateau, mines) :
             if plateau[i[0]][i[1]] == ['x'] :
                 liste_attente.append(i)
     devoiler_la_liste(plateau, mines, liste_attente)
-    return 0
 
 def devoiler_la_liste (plateau, mines, liste) :
+    """
+    Fonction qui dévoile toutes les cases d'une liste
+
+    Entrées :
+        plateau (list) : la représentation du plateau
+        mines (list) : la liste des mines
+        liste (list) : la liste des cases à dévoiler
+
+    Aucune sortie
+    """
+
     for i in liste :
         plateau[i[0]][i[1]] = calcul_nombre(i[0], i[1], mines)
         if plateau[i[0]][i[1]] == ' ' :
             devoiler_autour(i[0], i[1], plateau, mines)
-    return 0
 
 def affichage_nombre_mines_restantes (plateau, mines) :
+    """
+    Fonction qui affiche le nombre de mines restantes à trouver
+
+    Entrées :
+        plateau (list) : la représentation du plateau
+        mines (list) : la liste des mines
+
+    Sortie :
+        mines_restantes (int) : le nombre de mines restantes
+    """
+
     compteur = 0
     for i in plateau :
         for j in i :
@@ -188,21 +342,51 @@ def affichage_nombre_mines_restantes (plateau, mines) :
     elif mines_restantes == 1 :
         print("Il vous reste 1 mine à trouver\n")
     else : print("Il vous reste", mines_restantes, "mines à trouver\n")
-    return True, mines_restantes
+    return mines_restantes
 
 def test_nombre_mines_restantes (plateau, mines) :
+    """
+    Fonction qui calcule le nombre de mines restantes à trouver
+
+    Entrées :
+        plateau (list) : la représentation du plateau
+        mines (list) : la liste des mines
+
+    Sortie :
+        (int) : le nombre de mines restantes à trouver
+    """
+
     compteur = 0
     for i in plateau :
         for j in i :
             if j == '#' :
                 compteur += 1
     return int(len(mines) - compteur)
-    
-def test_fin_de_programme(str) :
-    if str == 'exit' :
+
+def test_fin_de_programme(string) :
+    """
+    Fonction qui teste si l'utilisateur veut arrêter la partie
+
+    Entrée :
+        string (str) : la saisie de l'utilisateur
+
+    Aucune sortie
+    """
+    if string == 'exit' :
         fin_de_partie()
 
-def test_retour(str, plateau, mines) :
-    if str == 'retour' :
+def test_retour(string, plateau, mines) :
+    """"
+    Fonction qui teste si l'utilisateur veut revenir au menu précédent
+
+    Entrées :
+        string (str) : la saisie de l'utilisateur
+        plateau (list) : la représentation du plateau
+        mines (list) : la liste des mines
+
+    Aucune sortie
+    """
+
+    if string == 'retour' :
         print('\n')
         tour_de_jeu(plateau, mines)
