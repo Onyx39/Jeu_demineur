@@ -95,6 +95,7 @@ def devoiler(plateau, mines, lig = '', col = '') :
         plateau[lig][col] = calcul_nombre(lig, col, mines)
         if plateau[lig][col] == ' ' :
             devoiler_autour(lig, col, plateau, mines)
+        test_devoiler_autour(lig, col, plateau, mines)
         affichage_jeu(plateau)
         if test_fin_de_partie(plateau, mines) :
             print('Vous avez gagné ! Bravo !\n')
@@ -275,6 +276,33 @@ def est_mine (lig, col, mines) :
     if [lig, col] in mines :
         return True
     return False
+
+def test_devoiler_autour(lig, col, plateau, mines) :
+    """
+    Fonction qui créé la liste des cases à dévoiler
+
+    Entrée :
+        lig (int) : le uméro de la ligne
+        col (int) : le numéro de la colonne
+        plateau (list) : la représentation du plateau
+        mines (list) : la liste des mines
+
+    Aucune sortie
+    """
+
+    nb_mines = plateau[lig][col]
+    if nb_mines in ["1", "2", "3", "4", "5", "6", "7", "8"] :
+        liste_cases_voisines = [[lig - 1, col - 1], [lig - 1, col], [lig - 1, col + 1],
+                                [lig, col - 1], [lig, col + 1],
+                                [lig + 1, col - 1], [lig + 1, col], [lig + 1, col + 1]]
+        compteur = 0
+        for case in liste_cases_voisines :
+            if test_case(case[0], case[1], plateau) :
+                if plateau[case[0]][case[1]] == '#' :
+                    compteur += 1
+        if int(nb_mines) == compteur :
+            devoiler_autour(lig, col, plateau, mines)
+
 
 
 def devoiler_autour (lig, col, plateau, mines) :
