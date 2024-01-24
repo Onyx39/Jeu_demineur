@@ -1,59 +1,91 @@
+"""
+Fichier en charge de l'initialisation du plateau
+"""
+
 import random as rd
+import sys
 
 def lancer_le_jeu () :
-    print("\n\nBienvenue dans le jeu du démineur\nCe programme a été implémenté par Valentin Richard\nEntrer 'exit' à n'importe quel moment pour fermer le programme\nBon jeu !")
-    n = (input("\nDéfinissez la taille de plateau \n(Un entier non nul inférieur ou égal à 20 est demandé)\n"))
-    if test_entrer_utilisateur(n) == int(n) :
-        m = int(n)
+    """
+    Fonction qui démarre le jeu
+
+    Auncune entrée
+
+    Sorties :
+        plateau (list<list>) : le représentation du plateau
+        mines (list) : l'emplacement des mines
+    """
+
+    print("\n\nBienvenue dans le jeu du démineur\n" \
+        + "Ce programme a été implémenté par Valentin Richard\n" \
+        + "Entrer 'exit' à n'importe quel moment pour fermer le programme\n" \
+        + "Bon jeu !")
+    entree = input("\nDéfinissez la taille de plateau \n" \
+               + "(Un entier non nul inférieur ou égal à 20 est demandé)\n")
+    if test_entrer_utilisateur(entree) == int(entree) :
         plateau = []
-        for i in range (m) :
+        for _ in range (int(entree)) :
             ligne = []
-            for j in range (m) :
+            for _ in range (int(entree)) :
                 ligne.append(["x"])
             plateau.append(ligne)
 
         mines = creer_liste_mines (plateau)
         return plateau, mines
 
-def test_entrer_utilisateur (n) :
-    if n == 'exit' :
-            fin_de_partie()
+    return None
+
+def test_entrer_utilisateur (entree) :
+    if entree == 'exit' :
+        fin_de_partie()
     try :
-        n = int(n)
+        entree = int(entree)
     except ValueError:
-        print("\nVous n'avez pas entré un entier\nVeuillez recommencer\n")
+        print("\nVous n'avez pas entré un entier\n" \
+              + "Veuillez recommencer\n")
         print("*"*40)
         lancer_le_jeu()
-    print(type(n))
-    print(n)
-    if n <= 0 or n > 20 :
-        print("\nL'entier ne rentre pas dans le domaine demandé\nVeuillez recommencer\n")
+    if entree <= 0 or entree > 20 :
+        print("\nL'entier ne rentre pas dans le domaine demandé\n" \
+              + "Veuillez recommencer\n")
         print("*"*40)
         lancer_le_jeu()
-    return int(n)
+    return int(entree)
 
 
 def creer_liste_mines (plateau) :
-    n = len(plateau)
-    m = round(0.15625*n*n)
+    longeur = len(plateau)
+    nb_mines = round(0.15625*longeur*longeur)
 
     liste_mines = []
-    for i in range (m) :
-        x = rd.randint(0, n - 1)
-        y = rd.randint(0, n - 1)
-        if [x, y] not in liste_mines :
-            liste_mines.append([x, y])
-        elif [y, x] not in liste_mines :
-            liste_mines.append([y, x])
-        else : 
-            x = rd.randint(0, n - 1)
-            if [x, y] not in liste_mines :
-                liste_mines.append([x, y])
-    
-    if len(liste_mines) == m :
+    for _ in range (nb_mines) :
+        abscisse = rd.randint(0, longeur - 1)
+        ordonnee = rd.randint(0, longeur - 1)
+        if [abscisse, ordonnee] not in liste_mines :
+            liste_mines.append([abscisse, ordonnee])
+        elif [ordonnee, abscisse] not in liste_mines :
+            liste_mines.append([ordonnee, abscisse])
+        else :
+            abscisse = rd.randint(0, longeur - 1)
+            if [abscisse, ordonnee] not in liste_mines :
+                liste_mines.append([abscisse, ordonnee])
+
+    if len(liste_mines) == nb_mines :
         return liste_mines
-    else : return creer_liste_mines(plateau)
+
+    return creer_liste_mines(plateau)
 
 def fin_de_partie () :
-    print("\nMerci d'avoir joué\nCe jeu vous a été proposé par Valentin Richard\nN'hésitez pas à faire des retours ou à rejouer\n\nA la prochaine fois :)\n")
-    exit()
+    """"
+    Fonction qui termine le jeu
+
+    Aucune entrée
+
+    Aucune sortie
+    """
+
+    print("\nMerci d'avoir joué\n" \
+          + "Ce jeu vous a été proposé par Valentin Richard\n" \
+          + "N'hésitez pas à faire des retours ou à rejouer\n\n" \
+          + "A la prochaine fois :)\n")
+    sys.exit()
